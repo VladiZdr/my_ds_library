@@ -61,6 +61,10 @@ public:
         return curr_size;
     }
 
+    bool empty(){
+        return curr_size == 0;
+    }
+
     size_t maximum_size(){
         return max_size;
     }
@@ -81,6 +85,10 @@ public:
 
         delete[] data;
         data = tmp;
+    }
+
+    void reinit(){
+        *this = MyStack<T>();
     }
 
     ~MyStack(){
