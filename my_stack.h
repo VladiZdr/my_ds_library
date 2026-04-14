@@ -7,19 +7,24 @@ template <typename T>
 class MyStack{
 
 private:
-    bool empty;
     size_t max_size;
     size_t curr_size;
 
-    vector<T> data;
+    T* data;
 
 public:
     MyStack(){
-        empty = true;
         max_size = 2;
         curr_size = 0;
 
         data = new T[max_size];
+    }
+
+    MyStack(vector<T> init_data){
+        MyStack();
+        for(size_t i =0; i< init_data.size() ; i++){
+            push(init_data[i]);
+        }
     }
 
     void push(T el){
@@ -56,7 +61,7 @@ public:
         return curr_size;
     }
 
-    size_t max_size(){
+    size_t maximum_size(){
         return max_size;
     }
 
@@ -68,7 +73,7 @@ public:
             max_size = SIZE_MAX;
         }
         else{
-            throw overflow_error("Stack reached maximum possible size")
+            throw overflow_error("Stack reached maximum possible size");
         }
 
         T* tmp = new T[max_size];
@@ -76,7 +81,6 @@ public:
 
         delete[] data;
         data = tmp;
-        delete[] tmp;
     }
 
     ~MyStack(){
