@@ -33,15 +33,18 @@ public:
 
     //constructor for data
     MyStack(vector<T> init_data){
-        *this = MyStack<T>();
+        max_size = 2;
+        curr_size = 0;
+
+        data = new T[max_size];
 
         for(size_t i =0; i< init_data.size() ; i++){
             push(init_data[i]);
         }
     }
 
-    MyStack& operator=(MyStack& other){
-        if(this != other){
+    MyStack& operator=(const MyStack& other){
+        if(this != &other){
 
             delete[] data;
 
@@ -104,7 +107,7 @@ public:
         if(max_size <= SIZE_MAX/2){
             max_size *= 2;
         }
-        else if(max_size <= SIZE_MAX){
+        else if(max_size < SIZE_MAX){
             max_size = SIZE_MAX;
         }
         else{
@@ -120,7 +123,11 @@ public:
 
     //clear stack
     void reinit(){
-        *this = MyStack<T>();
+        delete[] data;
+        max_size = 2;
+        curr_size = 0;
+
+        data = new T[max_size];
     }
 
     ~MyStack(){
