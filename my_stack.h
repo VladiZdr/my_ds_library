@@ -31,16 +31,23 @@ public:
         copy(other.data, other.data + curr_size, data);
     }
 
+    //move constructor
+    MyStack(MyStack&& other) noexcept
+        :max_size(other.max_size), curr_size(other.curr_size), data(other.data){
+
+            other.data = nullptr;
+            other.curr_size = 0;
+            other.max_size = 0;
+    }
+
     //constructor for data
-    MyStack(vector<T> init_data){
-        max_size = 2;
-        curr_size = 0;
+    MyStack(const vector<T>& init_data){
+        max_size = 2 * init_data.size();
+        curr_size = init_data.size();
 
         data = new T[max_size];
 
-        for(size_t i =0; i< init_data.size() ; i++){
-            push(init_data[i]);
-        }
+        copy(init_data.begin(), init_data.end(), data);
     }
 
     MyStack& operator=(const MyStack& other){
@@ -61,7 +68,7 @@ public:
 
 
     //add element
-    void push(T el){
+    void push(const T& el){
         if(curr_size == max_size){
             resize();
         }

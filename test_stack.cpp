@@ -42,6 +42,33 @@ int main(){
         assert(copyStack.top() == original.top());
     }
 
+    // MOVE CONSTRUCTOR TESTS
+    {
+        MyStack<int> original;
+        original.push(10);
+        original.push(20);
+        original.push(30);
+
+        size_t original_size = original.size();
+        size_t original_capacity = original.maximum_size();
+        int original_top = original.top();
+
+        MyStack<int> moved(std::move(original));
+
+        assert(moved.size() == original_size);
+
+        assert(moved.maximum_size() == original_capacity);
+
+        assert(moved.top() == original_top);
+
+        moved.pop();
+        assert(moved.top() == 20);
+
+        //original is left in valid empty state
+        assert(original.size() == 0);
+        assert(original.maximum_size() == 0);
+    }
+
     // VECTOR CONSTRUCTOR TESTS
     {
         vector<int> v = {1, 2, 3};
