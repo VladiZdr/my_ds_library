@@ -2,7 +2,9 @@
 #include <stdexcept>
 #include <iostream>
 #include <algorithm>
+#include <memory>
 using namespace std;
+
 
 template <typename T>
 class MyStack{
@@ -86,12 +88,12 @@ public:
         return data[curr_size - 1];
     }
 
-    //remove last element
+    //remove last element and force return rvalue (useful if named value || compiler cannot prove it's last use)
     T pop(){
         if(curr_size == 0){
             throw underflow_error("Not enough elements for pop()");
         }
-        return data[--curr_size];
+        return move(data[--curr_size]);
     }
 
     //get size
@@ -111,6 +113,7 @@ public:
 
     //double max size
     void resize(){
+        size_t limit = allocator_traits<allocator<T>>::max_size(allocator<T>{});
         if(max_size <= SIZE_MAX/2){
             max_size *= 2;
         }
@@ -121,8 +124,19 @@ public:
             throw overflow_error("Stack reached maximum possible size");
         }
 
+        if(max_size > limit){
+            throw bad_alloc();
+        }
+
         T* tmp = new T[max_size];
-        copy(data, data + curr_size, tmp);
+        try{
+            copy(data, data + curr_size, tmp);
+        }
+        catch(...){
+            delete[] tmp;
+            throw;
+        }
+        
 
         delete[] data;
         data = tmp;
