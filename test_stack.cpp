@@ -71,23 +71,41 @@ int main(){
 
     // VECTOR CONSTRUCTOR TESTS
     {
+        // Test 1: empty init
+        vector<int> empty = {};
+        MyStack<int> empty_stack(empty);
+
+        assert(empty_stack.size() == 0);
+
+        assert(empty_stack.maximum_size() == 2);
+
+        bool threw = false;
+        try{
+            empty_stack.top();
+        }catch(const underflow_error&){
+            threw = true;
+        }
+        assert(threw);
+
+        empty_stack.push(42);
+        assert(empty_stack.size() == 1);
+        assert(empty_stack.top() == 42);
+    }
+    {     
+        //Test 2: regular case   
         vector<int> v = {1, 2, 3};
         MyStack<int> s(v);
 
-        // Test 1: size
         assert(s.size() == 3);
 
-        // Test 2: max_size (should have resized at least once)
         assert(s.maximum_size() >= 3);
 
-        // Test 3: data contents (LIFO order)
         assert(s.top() == 3);
         s.pop();
         assert(s.top() == 2);
     }
-
-    //For vector constructor full data check
     {
+        //Test 3: full content check
         vector<int> v = {5, 6, 7, 8};
         MyStack<int> s(v);
 
@@ -150,6 +168,29 @@ int main(){
         }
         assert(b.empty());
     }
+    {
+        //Test 4: self-assignement test
+        MyStack<int> a;
+        a.push(1);
+        a.push(2);
+        a.push(3);
+
+        size_t old_size = a.size();
+        size_t old_max = a.maximum_size();
+        int old_top = a.top();
+
+        a = a;
+
+        assert(a.size() == old_size);
+        assert(a.maximum_size() == old_max);
+        assert(a.top() == old_top);
+
+        assert(a.pop() == 3);
+        assert(a.pop() == 2);
+        assert(a.pop() == 1);
+        assert(a.empty());
+    }
+
 
     cout<<"Constructors and operator= tests passed\n";
 
@@ -180,12 +221,10 @@ int main(){
         s.push(10);
         s.push(20);
 
-        // before pop
         assert(s.size() == 2);
 
         s.pop();
 
-        // after pop
         assert(s.size() == 1);
     }
 
@@ -208,6 +247,30 @@ int main(){
         int val = s.pop();
 
         assert(val == 2 && s.size() == 1 && s.top() == 1);
+    }
+
+    // EMPTY STACK EXCEPTION TESTS
+    {
+        MyStack<int> s;
+
+        bool top_threw = false;
+        try{
+            s.top();
+        }catch(const underflow_error&){
+            top_threw = true;
+        }
+        assert(top_threw);
+    }
+    {
+        MyStack<int> s;
+
+        bool pop_threw = false;
+        try{
+            s.pop();
+        }catch(const underflow_error&){
+            pop_threw = true;
+        }
+        assert(pop_threw);
     }
 
     // EMPTY TESTS

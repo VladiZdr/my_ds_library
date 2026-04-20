@@ -45,6 +45,13 @@ public:
 
     //constructor for data
     MyStack(const vector<T>& init_data){
+        if(init_data.size() == 0){
+            max_size = 2;
+            curr_size = 0;
+
+            data = new T[max_size];
+            return;
+        }
         max_size = 2 * init_data.size();
         curr_size = init_data.size();
 
