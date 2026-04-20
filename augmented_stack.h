@@ -19,7 +19,7 @@ public:
         sum = T{};
     }
 
-    void push(T el){
+    void push(const T& el){
         sum += el;
 
         stack.push(el);
