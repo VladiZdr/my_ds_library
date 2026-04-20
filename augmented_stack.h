@@ -56,4 +56,12 @@ public:
         return min_elements.top();
     }
 
+    bool empty() const{
+        return stack.empty();
+    }
+
+    size_t size() const{
+        return stack.size();
+    }
+
 };
