@@ -64,4 +64,32 @@ public:
         return stack.size();
     }
 
+    bool contains(const T& el){
+        MyStack<T> tmp;
+        bool found = false;
+
+        while (!stack.empty()){
+            T curr = stack.pop();
+            tmp.push(curr);
+
+            if( curr == el ){
+                found = true;
+                break;
+            }
+        }
+
+        while(!tmp.empty()){
+            stack.push( tmp.pop() );
+        }
+
+        return found;
+    }
+
+    //lower/upper_bound
+    //successor/predeccessor
+    //delete
+    //update
+    //rank(x) -> k-th element
+    //LRU/MRU -> least/most recently used
+    //intersect / merge
 };
