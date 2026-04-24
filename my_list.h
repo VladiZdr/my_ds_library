@@ -259,23 +259,85 @@ public:
         return r;
     }
     
-    //intersect / merge
+    //deep copy from other and destry other
     void merge(MyList<T>& other){
-        if(this == &other || other.begin() == nullptr){
+        if(this == &other){
+            return;
+        }
+        //move other to this
+        if(start==nullptr){
+            *this = other;
+            other.erase();
             return;
         }
 
-        Node<T>* curr = other.begin();
-        while(curr != nullptr){
-            Node<T>* next = curr->get_next();
+        Node<T>* curr1 = start;
+        Node<T>* curr2 = other.begin();
 
-            curr->set_prev(nullptr);
-            curr->set_next(nullptr);
-            insert(curr);
+        while(curr1->get_next() != nullptr){
+            if(curr2 == nullptr){
+                break;
+            }
+            
+            //find first node in L1 with key > curr2.key
+            while(curr1->get_key() < curr2->get_key()){
+                if(curr1->get_next() == nullptr){
+                    break;
+                }
+                curr1 = curr1->get_next();
+            }
+            if(curr1->get_next() == nullptr){
+                break;
+            }
 
-            curr = next;
+            //insert el from L2 in L1
+            Node<T>* to_add = new Node<T>(curr2->get_key(), curr2->get_val());
+            if(curr1->get_prev() != nullptr){
+                Node<T>* tmp = curr1->get_prev();
+
+                tmp->set_next(to_add);
+                to_add->set_prev(tmp);
+            }
+            //if curr1 = start
+            else{
+                start = to_add;
+            }
+            curr1->set_prev(to_add);
+            to_add->set_next(curr1);
+
+            curr2 = curr2->get_next();
         }
 
+        //insert any left elements from L2
+        while(curr2 != nullptr && curr1->get_key() > curr2->get_key()){
+            Node<T>* to_add = new Node<T>(curr2->get_key(), curr2->get_val());
+            
+            if(curr1->get_prev() != nullptr){
+                Node<T>* tmp = curr1->get_prev();
+
+                tmp->set_next(to_add);
+                to_add->set_prev(tmp);
+            }
+            else{
+                start = to_add;
+            }
+            curr1->set_prev(to_add);
+            to_add->set_next(curr1);
+            
+            curr2 = curr2->get_next();
+        }
+        while(curr2 != nullptr){
+            Node<T>* to_add = new Node<T>(curr2->get_key(), curr2->get_val());
+
+            to_add->set_prev(curr1);
+            curr1->set_next(to_add);
+            to_add->set_next(nullptr);
+
+            curr1 = curr1->get_next();
+            curr2 = curr2->get_next();
+        }
+
+        size+=other.length();
         other.erase();
     }
 
