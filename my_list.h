@@ -3,7 +3,7 @@
 template <typename T>
 class MyList{
 private:
-    Node<T> start;
+    Node<T>* start;
 
 public:
     //constructors
