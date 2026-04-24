@@ -61,6 +61,50 @@ public:
         other.size = 0;
     }
 
+    //assigments
+    MyList& operator=(MyList<T>&& other) noexcept{
+        if(this != &other){
+            erase();
+
+            this->start = other.begin();
+            this->size = other.length();
+
+            other.start = nullptr;
+            other.size = 0;
+        }
+
+        return *this;
+    }
+    
+    MyList& operator=(const MyList<T>& other){
+        if(this != &other){
+            erase();
+
+            Node<T>* tmp = other.begin();
+            if(tmp == nullptr){
+                start = nullptr;
+                size = 0;
+                return *this;
+            }
+
+            start = new Node<T>(tmp->get_key(), tmp->get_val());
+            Node<T>* curr = start;
+            tmp = tmp->get_next();
+
+            while(tmp != nullptr){
+                Node<T>* next = new Node<T>(tmp->get_key(), tmp->get_val());
+                curr->set_next(next);
+                next->set_prev(curr);
+
+                curr = next;
+                tmp = tmp->get_next();
+            }
+
+            size = other.length();
+        }
+
+        return *this;
+    }
     //operations
     Node<T>* begin() const{
         return start;
@@ -235,13 +279,19 @@ public:
         other.erase();
     }
 
-    ~MyList(){
+    //cleanup
+    void erase(){
         Node<T>* tmp = start;
         while(tmp != nullptr){
             Node<T>* next = tmp->get_next();
             delete tmp;
             tmp = next;
         }
+        size = 0;
+        start = nullptr;
+    }
+    ~MyList(){
+        erase();
     }
 };
 
