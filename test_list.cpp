@@ -562,7 +562,330 @@ int main() {
     delete b3n;
 }
 
-
     std::cout << "Assignement tests passed!\n";
+
+// INSERT TEST 1: new_node == nullptr, list unchanged
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+
+    Node<int>* old_head = l.begin();
+    Node<int>* old_second = old_head->get_next();
+
+    l.insert(nullptr);
+
+    assert(l.length() == 2);
+    assert(l.begin() == old_head);
+    assert(l.begin()->get_next() == old_second);
+
+    assert(old_head->get_key() == 10);
+    assert(old_second->get_key() == 20);
+
+    delete n1;
+    delete n2;
+}
+// INSERT TEST 2: insert into empty list makes deep copy head
+{
+    Node<int>* new_node = new Node<int>(10, 100);
+
+    MyList<int> l;
+    l.insert(new_node);
+
+    assert(l.length() == 1);
+    assert(l.begin() != nullptr);
+
+    assert(l.begin() != new_node); // deep copy
+    assert(l.begin()->get_key() == 10);
+    assert(l.begin()->get_val() == 100);
+
+    assert(l.begin()->get_prev() == nullptr);
+    assert(l.begin()->get_next() == nullptr);
+
+    delete new_node;
+}
+// INSERT TEST 3: smaller key than head goes to front
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* new_node = new Node<int>(5, 50);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(new_node);
+
+    assert(l.length() == 3);
+
+    Node<int>* h = l.begin();
+    Node<int>* s = h->get_next();
+    Node<int>* t = s->get_next();
+
+    assert(h != new_node); // deep copy
+    assert(h->get_key() == 5);
+    assert(h->get_val() == 50);
+
+    assert(s->get_key() == 10);
+    assert(t->get_key() == 20);
+
+    assert(h->get_prev() == nullptr);
+    assert(h->get_next() == s);
+    assert(s->get_prev() == h);
+    assert(s->get_next() == t);
+    assert(t->get_prev() == s);
+    assert(t->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete new_node;
+}
+// INSERT TEST 4: higher key than tail goes to back
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+    Node<int>* new_node = new Node<int>(40, 400);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+    l.insert(new_node);
+
+    assert(l.length() == 4);
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+    Node<int>* c = b->get_next();
+    Node<int>* d = c->get_next();
+
+    assert(d != new_node); // deep copy
+    assert(d->get_key() == 40);
+    assert(d->get_val() == 400);
+
+    assert(a->get_key() == 10);
+    assert(b->get_key() == 20);
+    assert(c->get_key() == 30);
+
+    assert(a->get_prev() == nullptr);
+    assert(a->get_next() == b);
+    assert(b->get_prev() == a);
+    assert(b->get_next() == c);
+    assert(c->get_prev() == b);
+    assert(c->get_next() == d);
+    assert(d->get_prev() == c);
+    assert(d->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+    delete new_node;
+}
+// INSERT TEST 5: insert key 3 into keys 1,2,4,5 gives 1,2,3,4,5
+{
+    Node<int>* n1 = new Node<int>(1, 10);
+    Node<int>* n2 = new Node<int>(2, 20);
+    Node<int>* n4 = new Node<int>(4, 40);
+    Node<int>* n5 = new Node<int>(5, 50);
+    Node<int>* new_node = new Node<int>(3, 30);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n4);
+    l.insert(n5);
+    l.insert(new_node);
+
+    assert(l.length() == 5);
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+    Node<int>* c = b->get_next();
+    Node<int>* d = c->get_next();
+    Node<int>* e = d->get_next();
+
+    assert(c != new_node); // deep copy
+    assert(c->get_key() == 3);
+    assert(c->get_val() == 30);
+
+    assert(a->get_key() == 1);
+    assert(b->get_key() == 2);
+    assert(d->get_key() == 4);
+    assert(e->get_key() == 5);
+
+    assert(a->get_prev() == nullptr);
+    assert(a->get_next() == b);
+
+    assert(b->get_prev() == a);
+    assert(b->get_next() == c);
+
+    assert(c->get_prev() == b);
+    assert(c->get_next() == d);
+
+    assert(d->get_prev() == c);
+    assert(d->get_next() == e);
+
+    assert(e->get_prev() == d);
+    assert(e->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n4;
+    delete n5;
+    delete new_node;
+}
+
+    std::cout << "Insert tests passed!\n";
+
+// REMOVE TEST 1: key not in list
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    bool removed = l.remove(25);
+
+    assert(!removed);
+    assert(l.length() == 3);
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+    Node<int>* c = b->get_next();
+
+    assert(a->get_key() == 10);
+    assert(b->get_key() == 20);
+    assert(c->get_key() == 30);
+
+    assert(a->get_prev() == nullptr);
+    assert(a->get_next() == b);
+    assert(b->get_prev() == a);
+    assert(b->get_next() == c);
+    assert(c->get_prev() == b);
+    assert(c->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// REMOVE TEST 2: remove head
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    bool removed = l.remove(10);
+
+    assert(removed);
+    assert(l.length() == 2);
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+
+    assert(a->get_key() == 20);
+    assert(b->get_key() == 30);
+
+    assert(a->get_prev() == nullptr);
+    assert(a->get_next() == b);
+    assert(b->get_prev() == a);
+    assert(b->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// REMOVE TEST 3: remove tail
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    bool removed = l.remove(30);
+
+    assert(removed);
+    assert(l.length() == 2);
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+
+    assert(a->get_key() == 10);
+    assert(b->get_key() == 20);
+
+    assert(a->get_prev() == nullptr);
+    assert(a->get_next() == b);
+    assert(b->get_prev() == a);
+    assert(b->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// REMOVE TEST 4: remove 3rd node in a 5-node list
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+    Node<int>* n4 = new Node<int>(40, 400);
+    Node<int>* n5 = new Node<int>(50, 500);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+    l.insert(n4);
+    l.insert(n5);
+
+    bool removed = l.remove(30);
+
+    assert(removed);
+    assert(l.length() == 4);
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+    Node<int>* c = b->get_next();
+    Node<int>* d = c->get_next();
+
+    assert(a->get_key() == 10);
+    assert(b->get_key() == 20);
+    assert(c->get_key() == 40);
+    assert(d->get_key() == 50);
+
+    assert(a->get_prev() == nullptr);
+    assert(a->get_next() == b);
+
+    assert(b->get_prev() == a);
+    assert(b->get_next() == c);
+
+    assert(c->get_prev() == b);
+    assert(c->get_next() == d);
+
+    assert(d->get_prev() == c);
+    assert(d->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+    delete n4;
+    delete n5;
+}
+
+    std::cout << "Remove tests passed!\n";
     return 0;
 }
