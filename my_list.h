@@ -22,10 +22,7 @@ public:
             return;
         }
 
-        this->start = new Node<T>(start_n);
-
-        start->set_prev(nullptr);
-        start->set_next(nullptr);
+        this->start = new Node<T>(start_n->get_key(), start_n->get_val());
 
         size = 1;
     }
@@ -114,6 +111,7 @@ public:
         return size;
     }
 
+    //insert without transfering ownership
     void insert(Node<T>* new_node){
         if(new_node == nullptr){
             return;

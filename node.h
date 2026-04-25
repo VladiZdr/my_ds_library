@@ -30,8 +30,8 @@ public:
     }
 
     Node(const T& key, const T& val){
-        this.key_ = key;
-        this.val_ = val;
+        this->key_ = key;
+        this->val_ = val;
         next_ = nullptr;
         prev_ = nullptr;
     }
