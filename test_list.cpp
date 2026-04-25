@@ -212,7 +212,357 @@ int main() {
         delete n3;
     }
 
-
     std::cout << "Constructor tests passed!\n";
+
+// COPY ASSIGNMENT TEST 0: both empty
+{
+    MyList<int> a;
+    MyList<int> b;
+
+    a = b;
+
+    assert(a.begin() == nullptr);
+    assert(a.length() == 0);
+
+    assert(b.begin() == nullptr);
+    assert(b.length() == 0);
+}
+// COPY ASSIGNMENT TEST 1: this empty, other has 3 nodes
+{
+    MyList<int> a;
+
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> b;
+    b.insert(n1);
+    b.insert(n2);
+    b.insert(n3);
+    Node<int>* b1 = b.begin();
+    Node<int>* b2 = b1->get_next();
+    Node<int>* b3 = b2->get_next();
+
+    a = b;
+
+    assert(a.length() == 3);
+    assert(a.begin() != nullptr);
+    assert(a.begin() != b.begin()); // deep copy
+
+    Node<int>* a1 = a.begin();
+    Node<int>* a2 = a1->get_next();
+    Node<int>* a3 = a2->get_next();
+
+    assert(a1->get_key() == 10 && a1->get_val() == 100);
+    assert(a2->get_key() == 20 && a2->get_val() == 200);
+    assert(a3->get_key() == 30 && a3->get_val() == 300);
+
+    assert(a1->get_prev() == nullptr);
+    assert(a1->get_next() == a2);
+    assert(a2->get_prev() == a1);
+    assert(a2->get_next() == a3);
+    assert(a3->get_prev() == a2);
+    assert(a3->get_next() == nullptr);
+
+    // b unchanged
+    assert(b.length() == 3);
+    assert(b.begin() == b1);
+    assert(b1->get_key() == 10 && b1->get_val() == 100);
+    assert(b2->get_key() == 20 && b2->get_val() == 200);
+    assert(b3->get_key() == 30 && b3->get_val() == 300);
+    assert(b1->get_prev() == nullptr);
+    assert(b1->get_next() == b2);
+    assert(b2->get_prev() == b1);
+    assert(b2->get_next() == b3);
+    assert(b3->get_prev() == b2);
+    assert(b3->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// COPY ASSIGNMENT TEST 2: other empty, this has 3 nodes
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> a;
+    a.insert(n1);
+    a.insert(n2);
+    a.insert(n3);
+
+    MyList<int> b;
+
+    a = b;
+
+    assert(a.begin() == nullptr);
+    assert(a.length() == 0);
+
+    assert(b.begin() == nullptr);
+    assert(b.length() == 0);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// COPY ASSIGNMENT TEST 3: this has 2 nodes, other has 1 node
+{
+    Node<int>* a1n = new Node<int>(10, 100);
+    Node<int>* a2n = new Node<int>(20, 200);
+    Node<int>* bn  = new Node<int>(15, 150);
+
+    MyList<int> a;
+    a.insert(a1n);
+    a.insert(a2n);
+
+    MyList<int> b;
+    b.insert(bn);
+    Node<int>* b1 = b.begin();
+
+    a = b;
+
+    assert(a.length() == 1);
+    assert(a.begin() != nullptr);
+    assert(a.begin() != b.begin());
+
+    assert(a.begin()->get_key() == 15);
+    assert(a.begin()->get_val() == 150);
+    assert(a.begin()->get_prev() == nullptr);
+    assert(a.begin()->get_next() == nullptr);
+
+    // b unchanged
+    assert(b.length() == 1);
+    assert(b.begin() == b1);
+    assert(b1->get_key() == 15);
+    assert(b1->get_val() == 150);
+    assert(b1->get_prev() == nullptr);
+    assert(b1->get_next() == nullptr);
+
+    delete a1n;
+    delete a2n;
+    delete bn;
+}
+// COPY ASSIGNMENT TEST 4: this has 2 nodes, other has 3 nodes
+{
+    Node<int>* a1n = new Node<int>(5, 50);
+    Node<int>* a2n = new Node<int>(25, 250);
+
+    Node<int>* b1n = new Node<int>(10, 100);
+    Node<int>* b2n = new Node<int>(20, 200);
+    Node<int>* b3n = new Node<int>(30, 300);
+
+    MyList<int> a;
+    a.insert(a1n);
+    a.insert(a2n);
+
+    MyList<int> b;
+    b.insert(b1n);
+    b.insert(b2n);
+    b.insert(b3n);
+    Node<int>* b1 = b.begin();
+    Node<int>* b2 = b1->get_next();
+    Node<int>* b3 = b2->get_next();
+
+    a = b;
+
+    assert(a.length() == 3);
+    assert(a.begin() != nullptr);
+    assert(a.begin() != b.begin());
+
+    Node<int>* x1 = a.begin();
+    Node<int>* x2 = x1->get_next();
+    Node<int>* x3 = x2->get_next();
+
+    assert(x1->get_key() == 10 && x1->get_val() == 100);
+    assert(x2->get_key() == 20 && x2->get_val() == 200);
+    assert(x3->get_key() == 30 && x3->get_val() == 300);
+
+    assert(x1->get_prev() == nullptr);
+    assert(x1->get_next() == x2);
+    assert(x2->get_prev() == x1);
+    assert(x2->get_next() == x3);
+    assert(x3->get_prev() == x2);
+    assert(x3->get_next() == nullptr);
+
+    // b unchanged
+    assert(b.length() == 3);
+    assert(b.begin() == b1);
+    assert(b1->get_key() == 10 && b1->get_val() == 100);
+    assert(b2->get_key() == 20 && b2->get_val() == 200);
+    assert(b3->get_key() == 30 && b3->get_val() == 300);
+
+    assert(b1->get_prev() == nullptr);
+    assert(b1->get_next() == b2);
+    assert(b2->get_prev() == b1);
+    assert(b2->get_next() == b3);
+    assert(b3->get_prev() == b2);
+    assert(b3->get_next() == nullptr);
+
+    delete a1n;
+    delete a2n;
+    delete b1n;
+    delete b2n;
+    delete b3n;
+}
+
+// MOVE ASSIGNMENT TEST 0: both empty
+{
+    MyList<int> a;
+    MyList<int> b;
+
+    a = std::move(b);
+
+    assert(a.begin() == nullptr);
+    assert(a.length() == 0);
+
+    assert(b.begin() == nullptr);
+    assert(b.length() == 0);
+}
+// MOVE ASSIGNMENT TEST 1: this empty, other has 3 nodes
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> a;
+
+    MyList<int> b;
+    b.insert(n1);
+    b.insert(n2);
+    b.insert(n3);
+
+    Node<int>* old_begin = b.begin();
+    Node<int>* old_second = old_begin->get_next();
+    Node<int>* old_third = old_second->get_next();
+
+    a = std::move(b);
+
+    assert(a.length() == 3);
+    assert(a.begin() == old_begin);
+    assert(a.begin()->get_next() == old_second);
+    assert(old_second->get_next() == old_third);
+
+    assert(b.begin() == nullptr);
+    assert(b.length() == 0);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// MOVE ASSIGNMENT TEST 2: other empty, this has 3 nodes
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> a;
+    a.insert(n1);
+    a.insert(n2);
+    a.insert(n3);
+
+    MyList<int> b;
+
+    a = std::move(b);
+
+    assert(a.begin() == nullptr);
+    assert(a.length() == 0);
+
+    assert(b.begin() == nullptr);
+    assert(b.length() == 0);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// MOVE ASSIGNMENT TEST 3: this has 2 nodes, other has 1 node
+{
+    Node<int>* a1n = new Node<int>(10, 100);
+    Node<int>* a2n = new Node<int>(20, 200);
+    Node<int>* bn  = new Node<int>(15, 150);
+
+    MyList<int> a;
+    a.insert(a1n);
+    a.insert(a2n);
+
+    MyList<int> b;
+    b.insert(bn);
+
+    Node<int>* old_begin = b.begin();
+
+    a = std::move(b);
+
+    assert(a.length() == 1);
+    assert(a.begin() == old_begin);
+    assert(a.begin()->get_key() == 15);
+    assert(a.begin()->get_val() == 150);
+    assert(a.begin()->get_prev() == nullptr);
+    assert(a.begin()->get_next() == nullptr);
+
+    assert(b.begin() == nullptr);
+    assert(b.length() == 0);
+
+    delete a1n;
+    delete a2n;
+    delete bn;
+}
+// MOVE ASSIGNMENT TEST 4: this has 2 nodes, other has 3 nodes
+{
+    Node<int>* a1n = new Node<int>(5, 50);
+    Node<int>* a2n = new Node<int>(25, 250);
+
+    Node<int>* b1n = new Node<int>(10, 100);
+    Node<int>* b2n = new Node<int>(20, 200);
+    Node<int>* b3n = new Node<int>(30, 300);
+
+    MyList<int> a;
+    a.insert(a1n);
+    a.insert(a2n);
+
+    MyList<int> b;
+    b.insert(b1n);
+    b.insert(b2n);
+    b.insert(b3n);
+
+    Node<int>* old_begin = b.begin();
+    Node<int>* old_second = old_begin->get_next();
+    Node<int>* old_third = old_second->get_next();
+
+    a = std::move(b);
+
+    assert(a.length() == 3);
+    assert(a.begin() == old_begin);
+
+    Node<int>* x1 = a.begin();
+    Node<int>* x2 = x1->get_next();
+    Node<int>* x3 = x2->get_next();
+
+    assert(x1 == old_begin);
+    assert(x2 == old_second);
+    assert(x3 == old_third);
+
+    assert(x1->get_key() == 10 && x1->get_val() == 100);
+    assert(x2->get_key() == 20 && x2->get_val() == 200);
+    assert(x3->get_key() == 30 && x3->get_val() == 300);
+
+    assert(x1->get_prev() == nullptr);
+    assert(x1->get_next() == x2);
+    assert(x2->get_prev() == x1);
+    assert(x2->get_next() == x3);
+    assert(x3->get_prev() == x2);
+    assert(x3->get_next() == nullptr);
+
+    assert(b.begin() == nullptr);
+    assert(b.length() == 0);
+
+    delete a1n;
+    delete a2n;
+    delete b1n;
+    delete b2n;
+    delete b3n;
+}
+
+
+    std::cout << "Assignement tests passed!\n";
     return 0;
 }
