@@ -887,5 +887,104 @@ int main() {
 }
 
     std::cout << "Remove tests passed!\n";
+
+// GET_NODE TEST 1: key not in list -> nullptr
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.get_node(25);
+
+    assert(result == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// GET_NODE TEST 2: get head
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.get_node(10);
+
+    assert(result != nullptr);
+    assert(result == l.begin());
+
+    assert(result->get_key() == 10);
+    assert(result->get_val() == 100);
+    assert(result->get_prev() == nullptr);
+    assert(result->get_next() != nullptr);
+    assert(result->get_next()->get_key() == 20);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// GET_NODE TEST 3: get tail
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.get_node(30);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 30);
+    assert(result->get_val() == 300);
+    assert(result->get_next() == nullptr);
+    assert(result->get_prev() != nullptr);
+    assert(result->get_prev()->get_key() == 20);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// GET_NODE TEST 4: get second node
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.get_node(20);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 20);
+    assert(result->get_val() == 200);
+
+    assert(result->get_prev() != nullptr);
+    assert(result->get_prev()->get_key() == 10);
+
+    assert(result->get_next() != nullptr);
+    assert(result->get_next()->get_key() == 30);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+
+    std::cout << "Get_Node tests passed!\n";
     return 0;
 }
