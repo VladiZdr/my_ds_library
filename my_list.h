@@ -242,13 +242,13 @@ public:
         return true;
     }
 
-    //rank(x)
+    //rank(x): how many elements in list with key < k
     std::size_t rank(const T& k) const{
         Node<T>* tmp = start;
         
         std::size_t r = 0;
         while(tmp != nullptr){
-            if(tmp->get_key() == k) return r;
+            if(tmp->get_key() >= k) return r;
 
             tmp = tmp->get_next();
             r++;

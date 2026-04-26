@@ -986,5 +986,395 @@ int main() {
 }
 
     std::cout << "Get_Node tests passed!\n";
+
+// LOWER_BOUND TEST 1: key not in list
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.lower_bound(25);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 30);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// LOWER_BOUND TEST 2: lower_bound(head->key)
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.lower_bound(10);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 10);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// LOWER_BOUND TEST 3: lower_bound(head->key + 1)
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.lower_bound(11);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 20);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// LOWER_BOUND TEST 4: lower_bound(tail->key)
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.lower_bound(30);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 30);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+
+// UPPER_BOUND TEST 1: key not in list
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.upper_bound(25);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 30);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// UPPER_BOUND TEST 2: upper_bound(head->key)
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.upper_bound(10);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 20);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// UPPER_BOUND TEST 3: upper_bound(head->key + 1)
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.upper_bound(11);
+
+    assert(result != nullptr);
+    assert(result->get_key() == 20);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// UPPER_BOUND TEST 4: upper_bound(tail->key)
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* result = l.upper_bound(30);
+
+    assert(result == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+
+    std::cout << "Bound tests passed!\n";
+
+// SUCCESSOR / PREDECESSOR TEST 1: key not in 3-node list
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    assert(l.successor(25) == nullptr);
+    assert(l.predeccessor(25) == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// SUCCESSOR / PREDECESSOR TEST 2: of head
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* succ = l.successor(10);
+    Node<int>* pred = l.predeccessor(10);
+
+    assert(succ != nullptr);
+    assert(succ->get_key() == 20);
+
+    assert(pred == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// SUCCESSOR / PREDECESSOR TEST 3: of tail
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* succ = l.successor(30);
+    Node<int>* pred = l.predeccessor(30);
+
+    assert(succ == nullptr);
+
+    assert(pred != nullptr);
+    assert(pred->get_key() == 20);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// SUCCESSOR / PREDECESSOR TEST 4: of second node
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    Node<int>* succ = l.successor(20);
+    Node<int>* pred = l.predeccessor(20);
+
+    assert(succ != nullptr);
+    assert(succ->get_key() == 30);
+
+    assert(pred != nullptr);
+    assert(pred->get_key() == 10);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+
+    std::cout << "Successor/Predecessor tests passed!\n";
+
+// UPDATE TEST 1: key k not in list
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    bool updated = l.update(25, 999);
+
+    assert(!updated);
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+    Node<int>* c = b->get_next();
+
+    assert(a->get_key() == 10 && a->get_val() == 100);
+    assert(b->get_key() == 20 && b->get_val() == 200);
+    assert(c->get_key() == 30 && c->get_val() == 300);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// UPDATE TEST 2: update all 3 nodes once, then second one once more
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    assert(l.update(10, 101));
+    assert(l.update(20, 202));
+    assert(l.update(30, 303));
+    assert(l.update(20, 222));
+
+    Node<int>* a = l.begin();
+    Node<int>* b = a->get_next();
+    Node<int>* c = b->get_next();
+
+    assert(a->get_key() == 10 && a->get_val() == 101);
+    assert(b->get_key() == 20 && b->get_val() == 222);
+    assert(c->get_key() == 30 && c->get_val() == 303);
+
+    assert(a->get_prev() == nullptr);
+    assert(a->get_next() == b);
+    assert(b->get_prev() == a);
+    assert(b->get_next() == c);
+    assert(c->get_prev() == b);
+    assert(c->get_next() == nullptr);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+
+    std::cout << "Update tests passed!\n";
+
+// RANK TEST 1: key k > key of tail
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    assert(l.rank(40) == 3);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// RANK TEST 2: key k < key of head
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    assert(l.rank(5) == 0);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// RANK TEST 3: key k = key of head
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    assert(l.rank(10) == 0);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+// RANK TEST 4: key k = key of second node
+{
+    Node<int>* n1 = new Node<int>(10, 100);
+    Node<int>* n2 = new Node<int>(20, 200);
+    Node<int>* n3 = new Node<int>(30, 300);
+
+    MyList<int> l;
+    l.insert(n1);
+    l.insert(n2);
+    l.insert(n3);
+
+    assert(l.rank(20) == 1);
+
+    delete n1;
+    delete n2;
+    delete n3;
+}
+
+    std::cout << "Rank tests passed!\n";
     return 0;
 }
