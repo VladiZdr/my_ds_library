@@ -12,7 +12,7 @@ public:
     SkipList(const SkipList& other){
         std::vector<MyList<K,V>*> other_levels = other.get_levels();
         for(int i = 0 ; i < other_levels.size() ; i++){
-            this->levels.push_back( new MyList<K, V>(other_levels[i]) );
+            this->levels.push_back( new MyList<K, V>(*other_levels[i]) );
         }
     }
 
