@@ -186,6 +186,22 @@ public:
         return nullptr;
     }
     
+    // Returns node with key >= k (lower bound), or tail if k > all keys
+    Node<K, V>* find(const K& k) const{
+        Node<K, V>* tmp = start;
+        if(tmp == nullptr){
+            return nullptr;
+        }
+
+        while(tmp->get_next() != nullptr){
+            if(tmp->get_key() >= k) return tmp;
+
+            tmp = tmp->get_next();
+        }
+
+        return tmp;
+    }
+
     //lower/upper_bound -> nullptr if not found
     Node<K, V>* lower_bound(const K& k) const{
         Node<K, V>* tmp = start;
@@ -202,6 +218,7 @@ public:
         return tmp;
     }
 
+    
     Node<K, V>* upper_bound(const K& k) const{
         Node<K, V>* tmp = start;
         if(tmp == nullptr){

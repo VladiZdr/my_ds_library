@@ -10,6 +10,7 @@ public:
     SkipList(){}
 
     SkipList(const SkipList& other){
+        erase();
         std::vector<MyList<K,V>*> other_levels = other.get_levels();
         for(int i = 0 ; i < other_levels.size() ; i++){
             this->levels.push_back( new MyList<K, V>(*other_levels[i]) );
@@ -43,6 +44,18 @@ public:
     }
     void set_levels(std::vector<MyList<K,V>*> new_levels){
         levels = new_levels;
+    }
+
+    Node<K,V>* find(K key){
+        
+        return nullptr;
+    }
+    void insert(Node<K,V> node){
+        
+    }
+
+    bool remove(K key){
+        
     }
     //cleanup
     void erase(){
