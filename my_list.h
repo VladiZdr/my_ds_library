@@ -112,7 +112,7 @@ public:
     }
 
     //insert without transfering ownership
-    void insert(Node<K, V>* new_node){
+    Node<K, V>* insert(Node<K, V>* new_node){
         if(new_node == nullptr){
             return;
         }
@@ -150,6 +150,7 @@ public:
 
         tmp->set_next(el);
         size++;
+        return el;
     }
 
     bool remove(const K& k){

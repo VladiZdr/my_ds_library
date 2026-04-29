@@ -1,5 +1,7 @@
-#include<vector>
+#include <vector>
 #include "my_list.h"
+#include <random>
+#include <ctime>
 
 template <typename K, typename V>
 class SkipList {
@@ -46,16 +48,49 @@ public:
         levels = new_levels;
     }
 
-    Node<K,V>* find(K key){
+    Node<K,V>* find(const K& key){
         
-        return nullptr;
     }
-    void insert(Node<K,V> node){
+    void insert(Node<K,V>& node){        
+        size_t curr_level = levels.size() - 1;
+        size_t random_levels = get_random_levels() + 1;
+        if(random_levels > levels.size()){
+            for(size_t i = levels.size() ; i < random_levels ; i++){
+                levels.push_back(new MyList<K, V>());
+            }
+        }
+        
+        Node<K,V>* prev_node = nullptr;
+        for(size_t i = 0 ; i < random_levels ; i++){
+        
+            Node<K, V>* new_node = levels[curr_level]->insert(node->get_key(), node->get_value());
+            
+            //if i == 0 || i == random_levels - 1 up and down are null by constructor
+            if(i != 0){
+                prev_node->set_down(new_node);
+                new_node->set_up(prev_node);
+            }
+
+            curr_level--;
+            prev_node = new_node;
+        }
+
+    }
+
+    bool remove(const K& key){
         
     }
 
-    bool remove(K key){
+    //helper functions
+    size_t get_random_levels() {
+        static std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
+        static std::bernoulli_distribution coin_flip(0.5); // 50% heads, 50% tails
         
+        size_t count = 0;
+        while (coin_flip(rng)) { // true = heads, false = tails
+            count++;
+        }
+        return count;
     }
     //cleanup
     void erase(){
@@ -68,3 +103,5 @@ public:
         erase();
     }
 };
+
+
