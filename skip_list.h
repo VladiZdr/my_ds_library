@@ -62,8 +62,8 @@ public:
         return curr_find;
     }
 
-    void insert(Node<K,V>& node){        
-        size_t curr_level = levels.size() - 1;
+    void insert(Node<K,V>& node){
+        //on how many levels insert 
         size_t random_levels = get_random_levels() + 1;
         if(random_levels > levels.size()){
             for(size_t i = levels.size() ; i < random_levels ; i++){
@@ -71,18 +71,18 @@ public:
             }
         }
         
+        //insert on each level starting from bottom
         Node<K,V>* prev_node = nullptr;
         for(size_t i = 0 ; i < random_levels ; i++){
         
-            Node<K, V>* new_node = levels[curr_level]->insert(node->get_key(), node->get_value());
+            Node<K, V>* new_node = levels[i]->insert(node->get_key(), node->get_value());
             
             //if i == 0 || i == random_levels - 1 up and down are null by constructor
             if(i != 0){
-                prev_node->set_down(new_node);
-                new_node->set_up(prev_node);
+                prev_node->set_up(new_node);
+                new_node->set_down(prev_node);
             }
 
-            curr_level--;
             prev_node = new_node;
         }
 
@@ -95,14 +95,18 @@ public:
         }
         
         Node<K,V>* curr = node;
+        Node<K,V>* next = nullptr;
+
         while(curr != nullptr){
             curr->get_prev()->set_next(curr->get_next());
             curr->get_next()->set_prev(curr->get_prev());
-            curr = curr->get_up();
-            if(curr != nullptr){
-                delete curr->get_down();
-            }
+
+            next = curr->get_up();
+            
+            delete curr;
+            curr = next;
         }
+
         return true;
     }
 
