@@ -206,7 +206,7 @@ public:
         return tmp;
     }
 
-    //return node with key = k or the node with the smallest key > k starting from start_node
+    //return node with key = k or the node with the largest key < k or tail of list from start_node
     Node<K, V>* find_from(Node<K, V>* start_node, const K& k) const{
         if(start_node == nullptr){
             return find(k);

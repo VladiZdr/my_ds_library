@@ -758,6 +758,147 @@ void test_move_assignment_this_two_other_three() {
     std::cout << "Move assignment this two other three test passed!" << std::endl;
 }
 
+// find Tests
+void test_find_key_not_in_list() {
+    SkipList<int, int> skiplist;
+    
+    // Add some nodes
+    Node<int, int>* node1 = new Node<int, int>(10, 100);
+    Node<int, int>* node2 = new Node<int, int>(20, 200);
+    Node<int, int>* node3 = new Node<int, int>(30, 300);
+    skiplist.insert(node1);
+    skiplist.insert(node2);
+    skiplist.insert(node3);
+    
+    // Try to find a key that doesn't exist
+    auto result = skiplist.find(15);
+    
+    // Should return node with largest key <= search key
+    assert(result != nullptr);
+    assert(result->get_key() == 10);  //(largest key <= search key)
+    assert(result->get_val() == 100);
+
+    // Try to find a key that doesn't exist
+    result = skiplist.find(25);
+    
+    // Should return node with largest key <= search key
+    assert(result != nullptr);
+    assert(result->get_key() == 20);  //(largest key <= search key)
+    assert(result->get_val() == 200);
+    
+    // Clean up allocated nodes
+    delete node1;
+    delete node2;
+    delete node3;
+    
+    std::cout << "find key not in list test passed!" << std::endl;
+}
+
+void test_find_key_in_list() {
+    SkipList<int, int> skiplist;
+    
+    // Add some nodes
+    Node<int, int>* node1 = new Node<int, int>(10, 100);
+    Node<int, int>* node2 = new Node<int, int>(20, 200);
+    Node<int, int>* node3 = new Node<int, int>(30, 300);
+    skiplist.insert(node1);
+    skiplist.insert(node2);
+    skiplist.insert(node3);
+    
+    // Find a key that exists
+    auto result = skiplist.find(20);
+    
+    // Should return the exact node
+    assert(result != nullptr);
+    assert(result->get_key() == 20);
+    assert(result->get_val() == 200);
+    
+    // Test finding first key
+    result = skiplist.find(10);
+    assert(result != nullptr);
+    assert(result->get_key() == 10);
+    assert(result->get_val() == 100);
+    
+    // Test finding last key
+    result = skiplist.find(30);
+    assert(result != nullptr);
+    assert(result->get_key() == 30);
+    assert(result->get_val() == 300);
+    
+    // Clean up allocated nodes
+    delete node1;
+    delete node2;
+    delete node3;
+    
+    std::cout << "find key in list test passed!" << std::endl;
+}
+
+void test_find_key_smaller_than_head() {
+    SkipList<int, int> skiplist;
+    
+    // Add some nodes
+    Node<int, int>* node1 = new Node<int, int>(20, 200);
+    Node<int, int>* node2 = new Node<int, int>(30, 300);
+    Node<int, int>* node3 = new Node<int, int>(40, 400);
+    skiplist.insert(node1);
+    skiplist.insert(node2);
+    skiplist.insert(node3);
+    
+    // Try to find a key smaller than head
+    auto result = skiplist.find(10);
+    
+    // Should return head node (first node) when key is smaller than all keys
+    assert(result != nullptr);
+    assert(result->get_key() == 20);  // Should be the head
+    assert(result->get_val() == 200);
+    
+    // Test with even smaller key
+    result = skiplist.find(5);
+    assert(result != nullptr);
+    assert(result->get_key() == 20);
+    assert(result->get_val() == 200);
+    
+    // Clean up allocated nodes
+    delete node1;
+    delete node2;
+    delete node3;
+    
+    std::cout << "find key smaller than head test passed!" << std::endl;
+}
+
+void test_find_key_bigger_than_tail() {
+    SkipList<int, int> skiplist;
+    
+    // Add some nodes
+    Node<int, int>* node1 = new Node<int, int>(10, 100);
+    Node<int, int>* node2 = new Node<int, int>(20, 200);
+    Node<int, int>* node3 = new Node<int, int>(30, 300);
+    skiplist.insert(node1);
+    skiplist.insert(node2);
+    skiplist.insert(node3);
+    
+    // Try to find a key bigger than tail
+    auto result = skiplist.find(50);
+    
+    // Should return tail node when key is bigger than all keys
+    assert(result != nullptr);
+    assert(result->get_key() == 30);  // Should be the tail
+    assert(result->get_val() == 300);
+    
+    // Test with even bigger key
+    result = skiplist.find(100);
+    assert(result != nullptr);
+    assert(result->get_key() == 30);
+    assert(result->get_val() == 300);
+    
+    // Clean up allocated nodes
+    delete node1;
+    delete node2;
+    delete node3;
+    
+    std::cout << "find key bigger than tail test passed!" << std::endl;
+}
+
 int main() {
     test_default_constructor();
         
@@ -785,6 +926,11 @@ int main() {
     test_move_assignment_this_two_other_one();
     test_move_assignment_this_two_other_three();
     
+    // find tests
+    test_find_key_not_in_list();
+    test_find_key_in_list();
+    test_find_key_smaller_than_head();
+    test_find_key_bigger_than_tail();
     
     std::cout << "All tests passed successfully!" << std::endl;
     return 0;
