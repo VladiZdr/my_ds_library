@@ -761,7 +761,7 @@ void test_move_assignment_this_two_other_three() {
 int main() {
     test_default_constructor();
         
-    // ... (rest of the code remains the same)
+    // Copy constructor tests
     test_copy_constructor_nullptr();
     test_copy_constructor_empty_list();
     test_copy_constructor_one_node();
@@ -784,6 +784,7 @@ int main() {
     test_move_assignment_other_empty_this_three();
     test_move_assignment_this_two_other_one();
     test_move_assignment_this_two_other_three();
+    
     
     std::cout << "All tests passed successfully!" << std::endl;
     return 0;

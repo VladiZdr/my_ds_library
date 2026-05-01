@@ -9,6 +9,15 @@ private:
     std::vector<MyList<K,V>*> levels;
 
     //helper functions
+    void set_levels(std::vector<MyList<K,V>*> new_levels){
+        erase();
+        if(new_levels.size() == 0){
+            levels.push_back(new MyList<K, V>());
+            return;
+        }
+        levels = new_levels;
+    }
+    
     size_t get_random_levels() {
         static std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
         static std::bernoulli_distribution coin_flip(0.5); // 50% heads, 50% tails
@@ -64,10 +73,6 @@ public:
     //operations
     std::vector<MyList<K,V>*> get_levels(){
         return levels;
-    }
-    void set_levels(std::vector<MyList<K,V>*> new_levels){
-        erase();
-        levels = new_levels;
     }
 
     Node<K,V>* find(const K& key){
