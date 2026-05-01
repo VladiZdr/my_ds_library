@@ -92,7 +92,7 @@ public:
         return curr_find;
     }
 
-    void insert(Node<K,V>* node){
+    size_t insert(Node<K,V>* node){
         //determine how many levels insert 
         size_t random_levels = get_random_levels() + 1;
         if(random_levels > levels.size()){
@@ -105,7 +105,8 @@ public:
         Node<K,V>* prev_node = nullptr;
         for(size_t i = 0 ; i < random_levels ; i++){
         
-            Node<K, V>* new_node = levels[i]->insert(new Node<K,V> (node->get_key(), node->get_val()));
+            Node<K, V>* inserted = new Node<K,V> (node->get_key(), node->get_val());
+            Node<K, V>* new_node = levels[i]->insert(inserted);
             
             //if i == 0 || i == random_levels - 1 up and down are null by constructor
             if(i != 0 && new_node != nullptr && prev_node != nullptr){
@@ -114,8 +115,10 @@ public:
             }
 
             prev_node = new_node;
+            delete inserted;
         }
 
+        return random_levels;
     }
 
     bool remove(const K& key){

@@ -2,34 +2,6 @@
 #include <cassert>
 #include <iostream>
 
-// Helper function to create a node for testing
-Node<int, int>* create_test_node(int key, int value) {
-    return new Node<int, int>(key, value);
-}
-
-// Helper function to verify node links
-void verify_node_links(Node<int, int>* node, Node<int, int>* expected_next, 
-                     Node<int, int>* expected_prev, Node<int, int>* expected_up, 
-                     Node<int, int>* expected_down, int expected_key, int expected_val) {
-    assert(node != nullptr);
-    assert(node->get_key() == expected_key);
-    assert(node->get_val() == expected_val);
-    assert(node->get_next() == expected_next);
-    assert(node->get_prev() == expected_prev);
-    assert(node->get_up() == expected_up);
-    assert(node->get_down() == expected_down);
-}
-
-// Helper function to verify list structure
-void verify_list_structure(MyList<int, int>* list, int expected_size) {
-    assert(list != nullptr);
-    assert(list->length() == expected_size);
-    
-    if (expected_size == 0) {
-        assert(list->begin() == nullptr);
-    }
-}
-
 void test_default_constructor() {
     // Test default constructor properly initializes first level with default constructor of MyList
     SkipList<int, int> skiplist;
@@ -899,6 +871,154 @@ void test_find_key_bigger_than_tail() {
     std::cout << "find key bigger than tail test passed!" << std::endl;
 }
 
+// insert Tests
+void test_insert_new_head() {
+    SkipList<int, int> skiplist;
+    // First insert some existing nodes
+    Node<int, int>* node1 = new Node<int, int>(10, 100);
+    Node<int, int>* node2 = new Node<int, int>(20, 200);
+    skiplist.insert(node1);
+    skiplist.insert(node2);
+
+    // Create a node to insert as new head
+    Node<int, int>* original_node = new Node<int, int>(5, 500);
+    
+    // Insert the node
+    size_t new_levels = skiplist.insert(original_node);
+    
+    assert(new_levels >= 1);
+
+    auto found_node = skiplist.find(5);
+    assert(found_node != nullptr);
+    assert(found_node->get_key() == 5);
+    assert(found_node->get_val() == 500);
+    assert(found_node != original_node);
+
+    for(size_t i = 1; i < new_levels; i++) {
+        auto level_node = found_node->get_up();
+        assert(level_node != nullptr);
+        assert(level_node->get_key() == 5);
+        assert(level_node->get_val() == 500);
+
+        assert(level_node != found_node);
+        assert(level_node->get_down() == found_node);
+
+        found_node = level_node;
+    }
+
+    delete original_node;
+    delete node1;
+    delete node2;
+    
+    std::cout << "insert new head test passed!" << std::endl;
+}
+
+void test_insert_new_tail() {
+    SkipList<int, int> skiplist;
+    
+    // First insert some existing nodes
+    Node<int, int>* node1 = new Node<int, int>(10, 100);
+    Node<int, int>* node2 = new Node<int, int>(20, 200);
+    skiplist.insert(node1);
+    skiplist.insert(node2);
+    
+    // Create a node to insert as new tail
+    Node<int, int>* original_node = new Node<int, int>(30, 300);
+    
+    // Insert the node
+    auto new_levels = skiplist.insert(original_node);
+    assert(new_levels >= 1);
+    
+    // Find the inserted node at the bottom level
+    auto found_node = skiplist.find(30);
+    assert(found_node != nullptr);
+    assert(found_node->get_key() == 30);
+    assert(found_node->get_val() == 300);
+    
+    // Verify deep copy: the inserted node should be different from original
+    assert(found_node != original_node);
+    
+    
+    for(size_t i = 1; i < new_levels; i++) {
+        auto level_node = found_node->get_up();
+        assert(level_node != nullptr);
+        assert(level_node->get_key() == 30);
+        assert(level_node->get_val() == 300);
+
+        assert(level_node != found_node);
+        assert(level_node->get_down() == found_node);
+
+        found_node = level_node;
+    }
+    
+    auto levels = skiplist.get_levels();
+    // Verify node doesn't appear on levels beyond level_count
+    for (size_t i = new_levels; i < levels.size(); i++) {
+        assert(levels[i]->get_node(30) == nullptr);
+    }
+    
+    // Clean up original nodes (the inserted copies are managed by SkipList)
+    delete node1;
+    delete node2;
+    delete original_node;
+    
+    std::cout << "insert new tail test passed!" << std::endl;
+}
+
+void test_insert_middle_node() {
+    SkipList<int, int> skiplist;
+    
+    // First insert some existing nodes
+    Node<int, int>* node1 = new Node<int, int>(10, 100);
+    Node<int, int>* node2 = new Node<int, int>(30, 300);
+    skiplist.insert(node1);
+    skiplist.insert(node2);
+    
+    // Create a node to insert in the middle
+    Node<int, int>* original_node = new Node<int, int>(20, 200);
+    
+    // Insert the node
+    auto new_levels = skiplist.insert(original_node);
+
+    assert(new_levels >= 1);
+    
+    // Find the inserted node at the bottom level
+    auto found_node = skiplist.find(20);
+    assert(found_node != nullptr);
+    assert(found_node->get_key() == 20);
+    assert(found_node->get_val() == 200);
+    
+    // Verify deep copy: the inserted node should be different from original
+    assert(found_node != original_node);
+    
+    for(size_t i = 1; i < new_levels; i++) {
+        auto level_node = found_node->get_up();
+        assert(level_node != nullptr);
+        assert(level_node->get_key() == 20);
+        assert(level_node->get_val() == 200);
+
+        assert(level_node != found_node);
+        assert(level_node->get_down() == found_node);
+
+        found_node = level_node;
+    }
+    
+    // Verify the node is properly positioned between the existing nodes
+    // At bottom level, check next/prev relationships
+    auto bottom_node = skiplist.find(20);
+    assert(bottom_node->get_prev() != nullptr);
+    assert(bottom_node->get_prev()->get_key() == 10);
+    assert(bottom_node->get_next() != nullptr);
+    assert(bottom_node->get_next()->get_key() == 30);
+    
+    // Clean up original nodes (the inserted copies are managed by SkipList)
+    delete node1;
+    delete node2;
+    delete original_node;
+    
+    std::cout << "insert middle node test passed!" << std::endl;
+}
+
 int main() {
     test_default_constructor();
         
@@ -931,6 +1051,11 @@ int main() {
     test_find_key_in_list();
     test_find_key_smaller_than_head();
     test_find_key_bigger_than_tail();
+    
+    // insert tests
+    test_insert_new_head();
+    test_insert_new_tail();
+    test_insert_middle_node();
     
     std::cout << "All tests passed successfully!" << std::endl;
     return 0;
